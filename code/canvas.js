@@ -13,9 +13,10 @@ CanvasDisplay.prototype.clear = function() {
 };
 
 CanvasDisplay.prototype.drawFrame = function() {
-    this.clearDisplay();
+    
   this.drawBackground();
   this.drawActors();
+    this.clearDisplay();
 };
 
 CanvasDisplay.prototype.clearDisplay = function() {
@@ -28,8 +29,14 @@ CanvasDisplay.prototype.clearDisplay = function() {
        this.cx.fillStyle = "rgb(44, 136, 214)";
       text="Oh NO...";
   }
+    
+    if (this.level.status!=null){
+    this.cx.font = "28px Georgia";
+    this.cx.fillStyle = "fuchsia";
     this.cx.textAlign = "center";
   this.cx.fillText(text, this.canvas.width/2, this.canvas.height/2);
+    }
+ 
 };
 
 

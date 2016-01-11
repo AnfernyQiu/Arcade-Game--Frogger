@@ -87,8 +87,9 @@ Level.prototype.actorAt=function(actor){
 var maxStep=0.05;
 
 Level.prototype.animate=function(step){
-    if(this.status!=null)
+    if(this.status!=null){
         this.finishDelay-=step;
+    }
 
     while(step>0){
         var thisStep=Math.min(step,maxStep);
@@ -105,6 +106,7 @@ Level.prototype.animate=function(step){
 Level.prototype.playerTouched=function(type,actor){
     if(type=="enemy"&&this.status==null){
         this.status="lost";
+        this.finishDelay=1;
     }else if(type=="item"&&this.player.holdItem==false){
         this.actors=this.actors.filter(function(other){
             return other!=actor;
@@ -217,7 +219,7 @@ Player.prototype.act=function(level,step){
          }
     }
     if(level.status=="lost"){
-        level.finishDelay = 1;
+  //      level.finishDelay = 1;
     }
 };
 
