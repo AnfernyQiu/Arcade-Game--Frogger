@@ -13,8 +13,23 @@ CanvasDisplay.prototype.clear = function() {
 };
 
 CanvasDisplay.prototype.drawFrame = function() {
+    this.clearDisplay();
   this.drawBackground();
   this.drawActors();
+};
+
+CanvasDisplay.prototype.clearDisplay = function() {
+    var text;
+  if (this.level.status == "won"){
+       this.cx.fillStyle = "rgb(68, 191, 255)";
+        text="You Win!";
+  }
+  else if (this.level.status == "lost"){
+       this.cx.fillStyle = "rgb(44, 136, 214)";
+      text="Oh NO...";
+  }
+    this.cx.textAlign = "center";
+  this.cx.fillText(text, this.canvas.width/2, this.canvas.height/2);
 };
 
 
@@ -52,16 +67,15 @@ playerSprites.src = "images/char-horn-girl.png";
 enemySprites.src="images/enemy-bug.png";
 itemSprites.src="images/Key-new.png";
 
-CanvasDisplay.prototype.drawPlayer = function(x, y) {
-
-  this.cx.drawImage(playerSprites,x*101,y*83);
-
-};
 
 CanvasDisplay.prototype.drawActors = function() {
+    this.level.itemCollect.forEach(function(i){
+        this.cx.drawImage(Resources.get('images/Key-new.png'),i*101,0);
+    },this);
+
   this.level.actors.forEach(function(actor) {
     if (actor.type == "player") {
-      this.drawPlayer(actor.pos.x, actor.pos.y);
+        this.cx.drawImage(Resources.get(actor.sprite),actor.pos.x*101, actor.pos.y*83);
     }
       else if(actor.type=="enemy"){
           this.cx.drawImage(enemySprites,actor.pos.x*101,actor.pos.y*83);

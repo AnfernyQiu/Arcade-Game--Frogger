@@ -35,6 +35,12 @@ function Level(plan){
 	})[0];
 
 	this.status=this.finishDelay=null;
+    
+    this.itemNum=this.actors.filter(function(actor){
+        return actor.type=="item";
+    }).length;
+    
+    this.itemCollect=[];
 }
 
 var ActorChars={
@@ -99,17 +105,12 @@ Level.prototype.animate=function(step){
 Level.prototype.playerTouched=function(type,actor){
     if(type=="enemy"&&this.status==null){
         this.status="lost";
-        this.finishDelay=1;
-    }else if(type=="item"){
+    }else if(type=="item"&&this.player.holdItem==false){
         this.actors=this.actors.filter(function(other){
             return other!=actor;
         });
-        if(!this.actors.some(function(actor){
-            return actor.type=="item";
-        })){
-            this.status="won";
-            this.finishDelay=1;
-        }
+        this.player.holdItem=true;
+        this.player.sprite='images/char-pink-girl-withKey.png';
     }
 };
 
@@ -160,8 +161,9 @@ Enemy.prototype.act=function(step,level){
 function Player(pos){
 	this.pos=pos;
     this.temPos=pos;
-	this.sprite='images/char-pink-girl-withKey.png';
+	this.sprite='images/char-pink-girl.png';
     this.size=new Vector(1,1);
+    this.holdItem=false;
 }
 Player.prototype.type="player";
 
@@ -183,6 +185,9 @@ Player.prototype.attempMove=function(){
     });
 };
 Player.prototype.move=function(level){
+    if(this.temPos.y==0&&level.itemCollect.indexOf(this.temPos.x)>-1)
+        this.temPos=this.pos;
+    else{
     var obstacle=level.obstacleAt(this.temPos,this.size);
     if(obstacle){
         this.temPos=this.pos;
@@ -191,6 +196,8 @@ Player.prototype.move=function(level){
 
     else
         this.pos=this.temPos;
+    }
+
 };
 
 Player.prototype.act=function(level,step){
@@ -200,9 +207,19 @@ Player.prototype.act=function(level,step){
     if(otherActor)
         level.playerTouched(otherActor.type, otherActor);
 
-    if(level.status=="lost"){
+     if(this.pos.y==0&&this.holdItem==true){
+        level.itemCollect.push(this.pos.x);
+        this.holdItem=false;
+         this.sprite='images/char-pink-girl.png';
+         if(level.itemCollect.length==level.itemNum){
+             level.status="won";
+             level.finishDelay = 1;
+         }
     }
-}
+    if(level.status=="lost"){
+        level.finishDelay = 1;
+    }
+};
 
 function runAnimation(frameFunc){
     var lastTime=null;
@@ -258,5 +275,3 @@ RunGame.prototype.startLevel=function(n){
 }
 
 var game= new RunGame(GAME_LEVELS, CanvasDisplay);
-
-game.startLevel(0);
