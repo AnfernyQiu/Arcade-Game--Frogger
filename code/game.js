@@ -22,7 +22,7 @@ function Level(plan){
 	}
 
 	for (var r=0;r<this.height;r++){
-		var lineA=plan.actors[r],gridLineA=[];
+		var lineA=plan.actors[r];
 		for(var g=0;g<this.width;g++){
 			var chA=lineA[g],Actor=ActorChars[chA];
 			if(Actor)

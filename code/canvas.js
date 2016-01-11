@@ -1,11 +1,17 @@
 function CanvasDisplay(parent, level) {
   this.canvas = document.createElement("canvas");
   this.canvas.width = level.width * 101;
-  this.canvas.height = level.height * 83 + 60;
+  this.canvas.height = 6 * 83+600;
   parent.appendChild(this.canvas);
   this.cx = this.canvas.getContext("2d");
   this.level = level;
   this.flipPlayer = false;
+    this.viewport={
+        left:0,
+        top:0,
+        width:this.level.width,
+        height:6
+    };
 }
 
 CanvasDisplay.prototype.clear = function() {
@@ -13,10 +19,22 @@ CanvasDisplay.prototype.clear = function() {
 };
 
 CanvasDisplay.prototype.drawFrame = function() {
-    
+    this.updateViewport();
   this.drawBackground();
   this.drawActors();
     this.clearDisplay();
+};
+
+CanvasDisplay.prototype.updateViewport=function(){
+    var view=this.viewport, margin=3;
+    var player=this.level.player;
+    var centerY=player.pos.y;
+
+    if(centerY<view.top+margin)
+        view.top=Math.max(centerY-margin,0);
+    else if (centerY>view.top+view.height-margin)
+        view.top=Math.min(centerY+margin-view.height,
+                          this.level.height-view.height);
 };
 
 CanvasDisplay.prototype.clearDisplay = function() {
@@ -51,7 +69,11 @@ var grassSprites = document.createElement("img"),
     obsRockSprites.src="images/Rock.png";
 
 CanvasDisplay.prototype.drawBackground = function() {
-  for (var y = 0; y < this.level.height; y++) {
+    var view=this.viewport;
+    var yStart=view.top;
+    var yEnd=view.top+view.height;
+    
+  for (var y = yStart; y < yEnd; y++) {
     for (var x = 0; x < this.level.width; x++) {
       var tile = this.level.grid[y][x], bgType=null;
 			if (tile=="grass")
@@ -62,18 +84,10 @@ CanvasDisplay.prototype.drawBackground = function() {
 				bgType=waterSprites;
             else if(tile=="obsRock")
                 bgType=obsRockSprites;
-      this.cx.drawImage(bgType,x*101,y*83);
+      this.cx.drawImage(bgType,x*101,(y-view.top)*83);
     }
   }
 };
-
-var playerSprites = document.createElement("img"),
-    itemSprites=document.createElement("img"),
-    enemySprites=document.createElement("img");
-playerSprites.src = "images/char-horn-girl.png";
-enemySprites.src="images/enemy-bug.png";
-itemSprites.src="images/Key-new.png";
-
 
 CanvasDisplay.prototype.drawActors = function() {
     this.level.itemCollect.forEach(function(i){
@@ -81,13 +95,15 @@ CanvasDisplay.prototype.drawActors = function() {
     },this);
 
   this.level.actors.forEach(function(actor) {
+      var desX=actor.pos.x*101;
+      var desY=(actor.pos.y-this.viewport.top)*83;
     if (actor.type == "player") {
-        this.cx.drawImage(Resources.get(actor.sprite),actor.pos.x*101, actor.pos.y*83);
+        this.cx.drawImage(Resources.get(actor.sprite),desX,desY);
     }
-      else if(actor.type=="enemy"){
-          this.cx.drawImage(enemySprites,actor.pos.x*101,actor.pos.y*83);
-      }else if(actor.type=="item"){
-          this.cx.drawImage(itemSprites,actor.pos.x*101,actor.pos.y*83);
+      else if(actor.type=="enemy"&&actor.pos.y>=this.viewport.top){
+          this.cx.drawImage(Resources.get("images/enemy-bug.png"),desX,desY);
+      }else if(actor.type=="item"&&actor.pos.y>=this.viewport.top){
+          this.cx.drawImage(Resources.get("images/Key-new.png"),desX,desY);
       }
   }, this);
 };
