@@ -12,4 +12,17 @@ actors:["      o",
 		" g     ",
 		"   c  b"]
 
-}];
+},
+    {background:["rrrrrrr",
+			 "ggogggg",
+			 "rorrrrr",
+			 "ggggggg",
+			 "gghhgog",
+			 "gghggog"],
+actors:["      o",
+		"   -   ",
+		"k      ",
+		"    -  ",
+		"    g  ",
+		"c      "]}
+];

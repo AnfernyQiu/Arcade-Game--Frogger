@@ -80,7 +80,7 @@ Level.prototype.actorAt=function(actor){
 
 var maxStep=0.05;
 
-Level.prototype.animate=function(step,keys){
+Level.prototype.animate=function(step){
     if(this.status!=null)
         this.finishDelay-=step;
 
@@ -88,7 +88,7 @@ Level.prototype.animate=function(step,keys){
         var thisStep=Math.min(step,maxStep);
         this.actors.forEach(function(actor){
             if(actor.type=="player")
-                actor.act(this,keys);
+                actor.act(this,thisStep);
             else if(actor.type!=="item")
                 actor.act(thisStep,this);
         },this);
@@ -159,64 +159,50 @@ Enemy.prototype.act=function(step,level){
 
 function Player(pos){
 	this.pos=pos;
+    this.temPos=pos;
 	this.sprite='images/char-pink-girl-withKey.png';
     this.size=new Vector(1,1);
-    this.speed=new Vector(0,0);
 }
 Player.prototype.type="player";
 
-Player.prototype.move=function(level,keys){
-    this.speed.x=0;
-    this.speed.y=0;
-    if(keys.left) this.speed.x-=1;
-    if(keys.right) this.speed.x+=1;
-    if(keys.up) this.speed.y-=1;
-    if(keys.down) this.speed.y+=1;
-
-    var motion=new Vector(this.speed.x,this.speed.y);
-    var newPos=this.pos.plus(motion);
-    var obstacle=level.obstacleAt(newPos,this.size);
-    if(obstacle)
+Player.prototype.attempMove=function(){
+    var that=this;
+    addEventListener("keydown",function(e){
+        e.preventDefault();
+        var allowedKeys = {
+            37: 'left',
+            38: 'up',
+            39: 'right',
+            40: 'down'
+        };
+        var key=allowedKeys[e.keyCode];
+        if(key=='left') that.temPos=that.temPos.plus(new Vector(-1,0));
+        if(key=='right') that.temPos=that.temPos.plus(new Vector(1,0));
+        if(key=='up') that.temPos=that.temPos.plus(new Vector(0,-1));
+        if(key=='down') that.temPos=that.temPos.plus(new Vector(0,1));
+    });
+};
+Player.prototype.move=function(level){
+    var obstacle=level.obstacleAt(this.temPos,this.size);
+    if(obstacle){
+        this.temPos=this.pos;
         level.playerTouched(obstacle);
+    }
+
     else
-        this.pos=newPos;
+        this.pos=this.temPos;
 };
 
-Player.prototype.act=function(level,keys){
-    this.move(level,keys);
+Player.prototype.act=function(level,step){
+    this.move(level);
 
     var otherActor=level.actorAt(this);
     if(otherActor)
         level.playerTouched(otherActor.type, otherActor);
 
-/*    if(level.status=="lost"){
-        this.pos.y+=step;
-        this.size.y-=step;
-    }*/
-}
-
-var allowedKeys = {
-        37: 'left',
-        38: 'up',
-        39: 'right',
-        40: 'down'
-    };
-
-function trackKeys(codes) {
-  var pressed = Object.create(null);
-  function handler(event) {
-    if (codes.hasOwnProperty(event.keyCode)) {
-      var down = event.type == "keydown";
-      pressed[codes[event.keyCode]] = down;
-      event.preventDefault();
+    if(level.status=="lost"){
     }
-  }
-  addEventListener("keydown", handler);
-  addEventListener("keyup", handler);
-  return pressed;
 }
-
-var arrows=trackKeys(allowedKeys);
 
 function runAnimation(frameFunc){
     var lastTime=null;
@@ -235,8 +221,9 @@ function runAnimation(frameFunc){
 
 function runLevel(level,Display,andThen){
     var display=new Display(document.body,level);
+    level.player.attempMove();
     runAnimation(function(step){
-        level.animate(step,arrows);
+        level.animate(step);
         display.drawFrame();
         if(level.isFinished()){
             display.clear();
@@ -271,3 +258,5 @@ RunGame.prototype.startLevel=function(n){
 }
 
 var game= new RunGame(GAME_LEVELS, CanvasDisplay);
+
+game.startLevel(0);

@@ -46,9 +46,11 @@ CanvasDisplay.prototype.drawBackground = function() {
 };
 
 var playerSprites = document.createElement("img"),
+    itemSprites=document.createElement("img"),
     enemySprites=document.createElement("img");
 playerSprites.src = "images/char-horn-girl.png";
 enemySprites.src="images/enemy-bug.png";
+itemSprites.src="images/Key-new.png";
 
 CanvasDisplay.prototype.drawPlayer = function(x, y) {
 
@@ -63,6 +65,8 @@ CanvasDisplay.prototype.drawActors = function() {
     }
       else if(actor.type=="enemy"){
           this.cx.drawImage(enemySprites,actor.pos.x*101,actor.pos.y*83);
+      }else if(actor.type=="item"){
+          this.cx.drawImage(itemSprites,actor.pos.x*101,actor.pos.y*83);
       }
   }, this);
 };
