@@ -11,7 +11,8 @@ function CanvasDisplay(parent, level) {
         top:this.level.height-7,
  //       top:1,
         width:this.level.width,
-        height:7
+        height:7,
+        margin:2
     };
 }
 
@@ -27,16 +28,16 @@ CanvasDisplay.prototype.drawFrame = function(step) {
 };
 
 CanvasDisplay.prototype.updateViewport=function(step){
-    var view=this.viewport, margin=2;
+    var view=this.viewport;
     var player=this.level.player;
     var centerY=player.pos.y;
+    var buttom=view.top+view.height-view.margin;
 
-    if (view.top>0){
+    if (this.level.status==null&&view.top>0){
         view.top=Math.max(view.top-0.2*step,0);
     }
 
-    var buttom=view.top+view.height-margin;
-     if (centerY>buttom)
+     if (this.level.status==null&&centerY>buttom)
          player.pos.y-=1;
 };
 
@@ -50,7 +51,6 @@ CanvasDisplay.prototype.clearDisplay = function() {
        this.cx.fillStyle = "rgb(44, 136, 214)";
       text="Oh NO...";
   }
-    
     if (this.level.status!=null){
     this.cx.font = "28px Georgia";
     this.cx.fillStyle = "fuchsia";
@@ -64,12 +64,14 @@ CanvasDisplay.prototype.clearDisplay = function() {
 var grassSprites = document.createElement("img"),
     stoneSprites= document.createElement("img"),
     waterSprites=document.createElement("img"),
+    selectorSprites=document.createElement("img"),
     obsRockSprites=document.createElement("img");
 
     grassSprites.src = "images/grass-block.png";
     stoneSprites.src="images/stone-block.png";
     waterSprites.src="images/water-block.png";
     obsRockSprites.src="images/Rock.png";
+    selectorSprites.src="images/Selector-new.png";
 
 CanvasDisplay.prototype.drawBackground = function() {
     var view=this.viewport;
@@ -87,15 +89,14 @@ CanvasDisplay.prototype.drawBackground = function() {
 				bgType=waterSprites;
             else if(tile=="obsRock")
                 bgType=obsRockSprites;
+            else if(tile=="selector")
+                bgType=selectorSprites;
       this.cx.drawImage(bgType,x*101,(y-view.top)*83);
     }
   }
 };
 
 CanvasDisplay.prototype.drawActors = function() {
-    this.level.itemCollect.forEach(function(i){
-        this.cx.drawImage(Resources.get('images/Key-new.png'),i*101,0);
-    },this);
 
   this.level.actors.forEach(function(actor) {
       var desX=actor.pos.x*101;
