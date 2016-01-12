@@ -243,7 +243,7 @@ function runLevel(level,Display,andThen){
     level.player.attempMove();
     runAnimation(function(step){
         level.animate(step);
-        display.drawFrame();
+        display.drawFrame(step);
         if(level.isFinished()){
             display.clear();
             if (andThen)

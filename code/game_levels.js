@@ -19,8 +19,8 @@ actors:["       ",
         "       ",
         "       ",
         "       ",
-        "       ",
-        "     c "]
+        "      c",
+        "       "]
 
 },
     {background:["rrrrrrr",

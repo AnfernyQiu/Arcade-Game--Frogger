@@ -1,16 +1,17 @@
 function CanvasDisplay(parent, level) {
   this.canvas = document.createElement("canvas");
   this.canvas.width = level.width * 101;
-  this.canvas.height = 6 * 83+600;
+  this.canvas.height = 6 * 83+80;
   parent.appendChild(this.canvas);
   this.cx = this.canvas.getContext("2d");
   this.level = level;
   this.flipPlayer = false;
     this.viewport={
         left:0,
-        top:0,
+        top:this.level.height-7,
+ //       top:1,
         width:this.level.width,
-        height:6
+        height:7
     };
 }
 
@@ -18,23 +19,25 @@ CanvasDisplay.prototype.clear = function() {
   this.canvas.parentNode.removeChild(this.canvas);
 };
 
-CanvasDisplay.prototype.drawFrame = function() {
-    this.updateViewport();
+CanvasDisplay.prototype.drawFrame = function(step) {
+    this.updateViewport(step);
   this.drawBackground();
   this.drawActors();
     this.clearDisplay();
 };
 
-CanvasDisplay.prototype.updateViewport=function(){
-    var view=this.viewport, margin=3;
+CanvasDisplay.prototype.updateViewport=function(step){
+    var view=this.viewport, margin=2;
     var player=this.level.player;
     var centerY=player.pos.y;
 
-    if(centerY<view.top+margin)
-        view.top=Math.max(centerY-margin,0);
-    else if (centerY>view.top+view.height-margin)
-        view.top=Math.min(centerY+margin-view.height,
-                          this.level.height-view.height);
+    if (view.top>0){
+        view.top=Math.max(view.top-0.2*step,0);
+    }
+
+    var buttom=view.top+view.height-margin;
+     if (centerY>buttom)
+         player.pos.y-=1;
 };
 
 CanvasDisplay.prototype.clearDisplay = function() {
@@ -70,8 +73,8 @@ var grassSprites = document.createElement("img"),
 
 CanvasDisplay.prototype.drawBackground = function() {
     var view=this.viewport;
-    var yStart=view.top;
-    var yEnd=view.top+view.height;
+    var yStart=Math.max(Math.floor(view.top-1.5),0);
+    var yEnd=Math.min(Math.ceil(view.top+view.height+1.5),(view.top+view.height));
     
   for (var y = yStart; y < yEnd; y++) {
     for (var x = 0; x < this.level.width; x++) {
@@ -100,9 +103,9 @@ CanvasDisplay.prototype.drawActors = function() {
     if (actor.type == "player") {
         this.cx.drawImage(Resources.get(actor.sprite),desX,desY);
     }
-      else if(actor.type=="enemy"&&actor.pos.y>=this.viewport.top){
+      else if(actor.type=="enemy"&&actor.pos.y>=(this.viewport.top-1.5)){
           this.cx.drawImage(Resources.get("images/enemy-bug.png"),desX,desY);
-      }else if(actor.type=="item"&&actor.pos.y>=this.viewport.top){
+      }else if(actor.type=="item"&&actor.pos.y>=(this.viewport.top-1.5)){
           this.cx.drawImage(Resources.get("images/Key-new.png"),desX,desY);
       }
   }, this);
