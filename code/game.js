@@ -45,7 +45,8 @@ var ActorChars = {
     "b": Item,
     "g": Item,
     "k": Item,
-    "-": Enemy
+    "-": Enemy,
+    "=": Enemy
 };
 
 Level.prototype.isFinished = function() {
@@ -72,10 +73,9 @@ Level.prototype.actorAt = function(actor) {
     for (var i = 0; i < this.actors.length; i++) {
         var other = this.actors[i];
         if (other != actor &&
-            actor.pos.x + actor.size.x > other.pos.x &&
-            actor.pos.x < other.pos.x + other.size.x &&
-            actor.pos.y + actor.size.y > other.pos.y &&
-            actor.pos.y < other.pos.y + other.size.y)
+            actor.pos.x + actor.size.x - 13 / 101 > other.pos.x &&
+            actor.pos.x + 13 / 101 < other.pos.x + other.size.x &&
+            actor.pos.y == other.pos.y)
             return other;
     }
 };
@@ -91,7 +91,7 @@ Level.prototype.animate = function(step, display) {
         var thisStep = Math.min(step, maxStep);
         this.actors.forEach(function(actor) {
             if (actor.type == "player")
-                actor.act(this, thisStep, display);
+                actor.act(this, display);
             else if (actor.type !== "item")
                 actor.act(thisStep, this);
         }, this);
@@ -100,9 +100,11 @@ Level.prototype.animate = function(step, display) {
 };
 
 Level.prototype.playerTouched = function(type, actor) {
-    if ((type == "enemy" || type == "water") && this.status == null) {
+    if ((type == "water") && this.status == null) {
         this.status = "lost";
         this.finishDelay = 1;
+    } else if (type == "enemy") {
+        this.player.pos = actor.pos;
     } else if (type == "item") {
         this.actors = this.actors.filter(function(other) {
             return other != actor;
@@ -142,36 +144,37 @@ function Item(pos, ch) {
 }
 Item.prototype.type = "item";
 
-function Enemy(pos) {
+function Enemy(pos, ch) {
     this.pos = pos;
     this.size = new Vector(1, 1);
-    this.speed = new Vector(1, 0);
     this.sprite = 'images/enemy-bug.png';
-    this.flip = false;
+    if (ch == "-")
+        this.speed = new Vector(1, 0);
+    else if (ch == "=")
+        this.speed = new Vector(-1, 0);
+
 }
+
 Enemy.prototype.type = "enemy";
 
 Enemy.prototype.act = function(step, level) {
-    var newPos = this.pos.plus(this.speed.times(step));
-    if (!level.obstacleAt(newPos, this.size))
-        this.pos = newPos;
-    else {
-        this.speed = this.speed.times(-1);
-        this.flip = !this.flip;
-    }
+    this.pos = this.pos.plus(this.speed.times(step));
+    if (this.pos.x > level.width && this.speed.x > 0)
+        this.pos.x = -1;
+    else if (this.pos.x < -1 && this.speed.x < 0)
+        this.pos.x = level.width;
 }
 
 function Player(pos) {
     this.pos = pos;
     this.sprite = 'images/char-pink-girl.png';
     this.size = new Vector(1, 1);
-    this.holdItem = false;
 }
 Player.prototype.type = "player";
 
 Player.prototype.move = function(level, display) {
     var that = this;
-    var viewPort=display.viewport;
+    var viewPort = display.viewport;
     addEventListener("keydown", function(e) {
         e.preventDefault();
         var allowedKeys = {
@@ -182,11 +185,18 @@ Player.prototype.move = function(level, display) {
         };
         var key = allowedKeys[e.keyCode];
         if (level.status == null) {
-            if (key == 'left'&& that.pos.x>0) that.pos = that.pos.plus(new Vector(-1, 0));
-            if (key == 'right'&& that.pos.x<viewPort.width-1) that.pos = that.pos.plus(new Vector(1, 0));
-            if (key == 'up' && that.pos.y >viewPort.top) that.pos = that.pos.plus(new Vector(0, -1));
-            if (key == 'down' && that.pos.y + 1 < viewPort.top+viewPort.height-viewPort.margin)
+            if (key == 'left' && that.pos.x > 0) {
+                that.pos = that.pos.plus(new Vector(-1, 0));
+            }
+            if (key == 'right' && that.pos.x < viewPort.width - 1) {
+                that.pos = that.pos.plus(new Vector(1, 0));
+            }
+            if (key == 'up' && that.pos.y > viewPort.top) {
+                that.pos = that.pos.plus(new Vector(0, -1));
+            }
+            if (key == 'down' && that.pos.y + 1 < viewPort.top + viewPort.height - viewPort.margin) {
                 that.pos = that.pos.plus(new Vector(0, 1));
+            }
         }
 
     });
@@ -194,14 +204,22 @@ Player.prototype.move = function(level, display) {
 
 };
 
-Player.prototype.act = function(level, step) {
+Player.prototype.act = function(level, display) {
+    var centerY = this.pos.y;
+    var buttom = display.viewport.top + display.viewport.height - display.viewport.margin;
+    if (level.status == null && centerY > buttom)
+        this.pos.y -= 1;
+    
     var obstacle = level.obstacleAt(this.pos, this.size);
     if (obstacle)
         level.playerTouched(obstacle);
 
     var otherActor = level.actorAt(this);
-    if (otherActor)
+    if (otherActor) {
         level.playerTouched(otherActor.type, otherActor);
+    }
+
+
 
 };
 
@@ -225,7 +243,7 @@ function runLevel(level, Display, andThen) {
     var display = new Display(document.body, level);
     level.player.move(level, display);
     runAnimation(function(step) {
-        level.animate(step);
+        level.animate(step, display);
         display.drawFrame(step);
         if (level.isFinished()) {
             display.clear();
