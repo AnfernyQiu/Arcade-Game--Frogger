@@ -54,12 +54,14 @@ Level.prototype.isFinished = function() {
 };
 
 Level.prototype.obstacleAt = function(pos, size) {
+    var playerXcenter=pos.x+0.5;
+    
     var xStart = Math.floor(pos.x);
     var xEnd = Math.ceil(pos.x + size.x);
     var yStart = Math.floor(pos.y);
     var yEnd = Math.ceil(pos.y + size.y);
 
-    if (xStart < 0 || xEnd > this.width || yStart < 0 || yEnd > this.height)
+    if ( playerXcenter< 0 || playerXcenter> this.width)
         return "boundary";
     for (var y = yStart; y < yEnd; y++) {
         for (var x = xStart; x < xEnd; x++) {
@@ -100,7 +102,7 @@ Level.prototype.animate = function(step, display) {
 };
 
 Level.prototype.playerTouched = function(type, actor) {
-    if ((type == "water") && this.status == null) {
+    if ((type == "water"||type=="boundary") && this.status == null) {
         this.status = "lost";
         this.finishDelay = 1;
     } else if (type == "enemy") {
@@ -193,9 +195,11 @@ Player.prototype.move = function(level, display) {
             }
             if (key == 'up' && that.pos.y > viewPort.top) {
                 that.pos = that.pos.plus(new Vector(0, -1));
+                that.pos.x = Math.round(that.pos.x);
             }
             if (key == 'down' && that.pos.y + 1 < viewPort.top + viewPort.height - viewPort.margin) {
                 that.pos = that.pos.plus(new Vector(0, 1));
+                that.pos.x = Math.round(that.pos.x);
             }
         }
 
@@ -207,9 +211,10 @@ Player.prototype.move = function(level, display) {
 Player.prototype.act = function(level, display) {
     var centerY = this.pos.y;
     var buttom = display.viewport.top + display.viewport.height - display.viewport.margin;
-    if (level.status == null && centerY > buttom)
+    if (level.status == null && centerY > buttom){
+        this.pos.x=Math.round(this.pos.x);
         this.pos.y -= 1;
-    
+    }
     var obstacle = level.obstacleAt(this.pos, this.size);
     if (obstacle)
         level.playerTouched(obstacle);
