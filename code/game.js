@@ -55,7 +55,7 @@ Level.prototype.isFinished = function() {
 
 Level.prototype.obstacleAt = function(pos, size) {
     var playerXcenter=pos.x+0.5;
-    
+
     var xStart = Math.floor(pos.x);
     var xEnd = Math.ceil(pos.x + size.x);
     var yStart = Math.floor(pos.y);
@@ -149,11 +149,14 @@ Item.prototype.type = "item";
 function Enemy(pos, ch) {
     this.pos = pos;
     this.size = new Vector(1, 1);
-    this.sprite = 'images/enemy-bug.png';
-    if (ch == "-")
+    if (ch == "-"){
         this.speed = new Vector(1, 0);
-    else if (ch == "=")
+        this.sprite = 'images/enemy-bug-new.png';
+    }
+    else if (ch == "="){
         this.speed = new Vector(-1, 0);
+        this.sprite = 'images/enemy-bug-flip-new.png';
+    }
 
 }
 
@@ -169,7 +172,7 @@ Enemy.prototype.act = function(step, level) {
 
 function Player(pos) {
     this.pos = pos;
-    this.sprite = 'images/char-pink-girl.png';
+    this.sprite = 'images/char-pink-girl-new.png';
     this.size = new Vector(1, 1);
 }
 Player.prototype.type = "player";

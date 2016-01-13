@@ -100,7 +100,7 @@ CanvasDisplay.prototype.drawActors = function() {
         if (actor.type == "player") {
             this.cx.drawImage(Resources.get(actor.sprite), desX, desY);
         } else if (actor.type == "enemy" && actor.pos.y >= (this.viewport.top - 1.5)) {
-            this.cx.drawImage(Resources.get("images/enemy-bug.png"), desX, desY);
+            this.cx.drawImage(Resources.get(actor.sprite), desX, desY);
         } else if (actor.type == "item" && actor.pos.y >= (this.viewport.top - 1.5)) {
             this.cx.drawImage(Resources.get("images/Key-new.png"), desX, desY);
         }
