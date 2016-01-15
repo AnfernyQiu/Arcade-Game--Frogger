@@ -54,14 +54,14 @@ Level.prototype.isFinished = function() {
 };
 
 Level.prototype.obstacleAt = function(pos, size) {
-    var playerXcenter=pos.x+0.5;
+    var playerXcenter = pos.x + 0.5;
 
     var xStart = Math.floor(pos.x);
     var xEnd = Math.ceil(pos.x + size.x);
     var yStart = Math.floor(pos.y);
     var yEnd = Math.ceil(pos.y + size.y);
 
-    if ( playerXcenter< 0 || playerXcenter> this.width)
+    if (playerXcenter < 0 || playerXcenter > this.width)
         return "boundary";
     for (var y = yStart; y < yEnd; y++) {
         for (var x = xStart; x < xEnd; x++) {
@@ -102,11 +102,17 @@ Level.prototype.animate = function(step, display) {
 };
 
 Level.prototype.playerTouched = function(type, actor) {
-    if ((type == "water"||type=="boundary") && this.status == null) {
+    if (type == "boundary" && this.status == null) {
         this.status = "lost";
         this.finishDelay = 1;
+    } else if (type == "water") {
+        if (this.player.ride == false && this.status == null) {
+            this.status = "lost";
+            this.finishDelay = 1;
+        }
     } else if (type == "enemy") {
         this.player.pos = actor.pos;
+        this.player.ride = true;
     } else if (type == "item") {
         this.actors = this.actors.filter(function(other) {
             return other != actor;
@@ -149,11 +155,10 @@ Item.prototype.type = "item";
 function Enemy(pos, ch) {
     this.pos = pos;
     this.size = new Vector(1, 1);
-    if (ch == "-"){
+    if (ch == "-") {
         this.speed = new Vector(1, 0);
         this.sprite = 'images/enemy-bug-new.png';
-    }
-    else if (ch == "="){
+    } else if (ch == "=") {
         this.speed = new Vector(-1, 0);
         this.sprite = 'images/enemy-bug-flip-new.png';
     }
@@ -174,6 +179,7 @@ function Player(pos) {
     this.pos = pos;
     this.sprite = 'images/char-pink-girl-new.png';
     this.size = new Vector(1, 1);
+    this.ride = false;
 }
 Player.prototype.type = "player";
 
@@ -214,20 +220,20 @@ Player.prototype.move = function(level, display) {
 Player.prototype.act = function(level, display) {
     var centerY = this.pos.y;
     var buttom = display.viewport.top + display.viewport.height - display.viewport.margin;
-    if (level.status == null && centerY > buttom){
-        this.pos.x=Math.round(this.pos.x);
+    if (level.status == null && centerY > buttom) {
+        this.pos.x = Math.round(this.pos.x);
         this.pos.y -= 1;
     }
+    var otherActor = level.actorAt(this);
+    if (otherActor&&level.status==null) {
+        level.playerTouched(otherActor.type, otherActor);
+    }else{
+        this.ride=false;
+    }
+
     var obstacle = level.obstacleAt(this.pos, this.size);
     if (obstacle)
         level.playerTouched(obstacle);
-
-    var otherActor = level.actorAt(this);
-    if (otherActor) {
-        level.playerTouched(otherActor.type, otherActor);
-    }
-
-
 
 };
 

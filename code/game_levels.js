@@ -5,7 +5,7 @@ var GAME_LEVELS=[
 			 "rrrrrrr",
 			 "gghhghg",
 			 "gghgghg",
-             "ggggggg",
+             "ghggghg",
              "ggggggg",
              "ggggggg",
              "rrrrrrr",
