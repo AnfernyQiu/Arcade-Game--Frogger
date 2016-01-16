@@ -19,7 +19,7 @@ var Engine = (function(global) {
      * create the canvas element, grab the 2D context for that canvas
      * set the canvas elements height/width and add it to the DOM.
      */
-    
+
 
 
 
@@ -51,18 +51,32 @@ var Engine = (function(global) {
      * all of these images are properly loaded our game will start.
      */
     Resources.load([
-        'images/stone-block.png',
-        'images/water-block.png',
-        'images/grass-block.png',
-        'images/enemy-bug-new.png',
-        'images/enemy-bug-flip-new.png',
-        'images/char-pink-girl-withKey.png',
-        'images/Gem Blue.png',
-        'images/Gem Orange.png',
-        'images/Gem Green.png',
-        'images/Key-new.png',
-        'images/Rock.png',
-        'images/char-pink-girl-new.png'
+        'background/grass-block.png',
+        'background/Ramp South.png',
+        'background/water-block.png',
+        'background/Dirt Block.png',
+        'background/Ramp North.png',
+        'background/stone-block.png',
+        'background/Wood Block.png',
+        'background/Window Tall.png',
+        'background/Door Tall Closed.png',
+        'background/Roof South West.png',
+        'background/Roof South.png',
+        'background/Roof South East.png',
+        'background/Door Tall Open.png',
+        'character/bug-l.png',
+        'character/bug-r.png',
+        'character/cat-girl.png',
+        'character/Gem Blue.png',
+        'character/Gem Green.png',
+        'character/Gem Orange.png',
+        'character/Heart.png',
+        'character/horn-girl.png',
+        'character/princess-girl.png',
+        'character/turtle-r.png',
+        'character/turtle.png',
+        'character/Key.png',
+        'character/pink-girl.png',
     ]);
     Resources.onReady(init);
 

@@ -9,15 +9,7 @@ function Level(plan) {
             gridLine = [];
         for (var x = 0; x < this.width; x++) {
             var ch = line[x],
-                bgType = null;
-            if (ch == "g")
-                bgType = "grass";
-            else if (ch == "r")
-                bgType = "stone";
-            else if (ch == "h")
-                bgType = "water";
-            else if (ch == "s")
-                bgType = "selector";
+                bgType = BgChars[ch];
             gridLine.push(bgType);
         }
         this.grid.push(gridLine);
@@ -39,14 +31,32 @@ function Level(plan) {
 
     this.status = this.finishDelay = null;
 }
+var BgChars = {
+    "g": "grass-block",
+    "s": "Ramp South",
+    "h": "water-block",
+    "d": "Dirt Block",
+    "n": "Ramp North",
+    "r": "stone-block",
+    "w": "Wood Block",
+    "t": "Window Tall",
+    "m": "Door Tall Closed",
+    "f": "Roof South West",
+    "o": "Roof South",
+    "e": "Roof South East",
+    "a": "Door Tall Open"
+};
+
 var ActorChars = {
     "c": Player,
     "o": Item,
     "b": Item,
     "g": Item,
     "k": Item,
-    "-": Enemy,
-    "=": Enemy
+    "e": Enemy,
+    "E": Enemy,
+    "t": Turtle,
+    "T": Turtle
 };
 
 Level.prototype.isFinished = function() {
@@ -66,7 +76,7 @@ Level.prototype.obstacleAt = function(pos, size) {
     for (var y = yStart; y < yEnd; y++) {
         for (var x = xStart; x < xEnd; x++) {
             var fieldType = this.grid[y][x];
-            if (fieldType == "water") return fieldType;
+            if (fieldType == "water-block") return fieldType;
         }
     }
 };
@@ -102,15 +112,15 @@ Level.prototype.animate = function(step, display) {
 };
 
 Level.prototype.playerTouched = function(type, actor) {
-    if (type == "boundary" && this.status == null) {
+    if ((type == "boundary"||type=="enemy") && this.status == null) {
         this.status = "lost";
         this.finishDelay = 1;
-    } else if (type == "water") {
+    } else if (type == "water-block") {
         if (this.player.ride == false && this.status == null) {
             this.status = "lost";
             this.finishDelay = 1;
         }
-    } else if (type == "enemy") {
+    } else if (type == "turtle") {
         this.player.pos = actor.pos;
         this.player.ride = true;
     } else if (type == "item") {
@@ -141,28 +151,49 @@ function Item(pos, ch) {
     this.pos = pos;
     this.size = new Vector(1, 1);
     if (ch == "o") {
-        this.sprite = 'images/Gem Orange-new.png';
+        this.sprite = 'character/Gem Orange.png';
     } else if (ch == "b") {
-        this.sprite = 'images/Gem Blue-new.png';
+        this.sprite = 'character/Gem Blue.png';
     } else if (ch == "g") {
-        this.sprite = 'images/Gem Green-new.png';
+        this.sprite = 'character/Gem Green.png';
     } else if (ch == "k") {
-        this.sprite = 'images/Key-new.png';
+        this.sprite = 'character/Key.png';
     }
 }
 Item.prototype.type = "item";
 
+function Turtle(pos, ch) {
+    this.pos = pos;
+    this.size = new Vector(1, 1);
+    if (ch == "T") {
+        this.speed = new Vector(1, 0);
+        this.sprite = 'character/turtle-r.png';
+    } else if (ch == "t") {
+        this.speed = new Vector(-1, 0);
+        this.sprite = 'character/turtle.png';
+    }
+}
+
+Turtle.prototype.type = "turtle";
+
+Turtle.prototype.act = function(step, level) {
+    this.pos = this.pos.plus(this.speed.times(step));
+    if (this.pos.x > level.width && this.speed.x > 0)
+        this.pos.x = -1;
+    else if (this.pos.x < -1 && this.speed.x < 0)
+        this.pos.x = level.width;
+};
+
 function Enemy(pos, ch) {
     this.pos = pos;
     this.size = new Vector(1, 1);
-    if (ch == "-") {
+    if (ch == "E") {
         this.speed = new Vector(1, 0);
-        this.sprite = 'images/enemy-bug-new.png';
-    } else if (ch == "=") {
+        this.sprite = 'character/bug-r.png';
+    } else if (ch == "e") {
         this.speed = new Vector(-1, 0);
-        this.sprite = 'images/enemy-bug-flip-new.png';
+        this.sprite = 'character/bug-l.png';
     }
-
 }
 
 Enemy.prototype.type = "enemy";
@@ -173,11 +204,12 @@ Enemy.prototype.act = function(step, level) {
         this.pos.x = -1;
     else if (this.pos.x < -1 && this.speed.x < 0)
         this.pos.x = level.width;
-}
+};
+
 
 function Player(pos) {
     this.pos = pos;
-    this.sprite = 'images/char-pink-girl-new.png';
+    this.sprite = 'character/princess-girl.png';
     this.size = new Vector(1, 1);
     this.ride = false;
 }
@@ -225,10 +257,10 @@ Player.prototype.act = function(level, display) {
         this.pos.y -= 1;
     }
     var otherActor = level.actorAt(this);
-    if (otherActor&&level.status==null) {
+    if (otherActor && level.status == null) {
         level.playerTouched(otherActor.type, otherActor);
-    }else{
-        this.ride=false;
+    } else {
+        this.ride = false;
     }
 
     var obstacle = level.obstacleAt(this.pos, this.size);

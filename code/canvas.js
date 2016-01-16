@@ -31,7 +31,7 @@ CanvasDisplay.prototype.updateViewport = function(step) {
     var view = this.viewport;
     var player = this.level.player;
 
-    if (this.level.status == null && view.top > 0) {
+    if (this.level.status == null && view.top > 0.6) {
         view.top = Math.max(view.top - 0.2 * step, 0);
     }
 
@@ -55,19 +55,6 @@ CanvasDisplay.prototype.clearDisplay = function() {
 
 };
 
-
-var grassSprites = document.createElement("img"),
-    stoneSprites = document.createElement("img"),
-    waterSprites = document.createElement("img"),
-    selectorSprites = document.createElement("img"),
-    obsRockSprites = document.createElement("img");
-
-grassSprites.src = "images/grass-block.png";
-stoneSprites.src = "images/stone-block.png";
-waterSprites.src = "images/water-block.png";
-obsRockSprites.src = "images/Rock.png";
-selectorSprites.src = "images/Selector-new.png";
-
 CanvasDisplay.prototype.drawBackground = function() {
     var view = this.viewport;
     var yStart = Math.max(Math.floor(view.top - 1.5), 0);
@@ -76,18 +63,8 @@ CanvasDisplay.prototype.drawBackground = function() {
     for (var y = yStart; y < yEnd; y++) {
         for (var x = 0; x < this.level.width; x++) {
             var tile = this.level.grid[y][x],
-                bgType = null;
-            if (tile == "grass")
-                bgType = grassSprites;
-            else if (tile == "stone")
-                bgType = stoneSprites;
-            else if (tile == "water")
-                bgType = waterSprites;
-            else if (tile == "obsRock")
-                bgType = obsRockSprites;
-            else if (tile == "selector")
-                bgType = selectorSprites;
-            this.cx.drawImage(bgType, x * 101, (y - view.top) * 83);
+                sprite="background/"+tile+".png";
+            this.cx.drawImage(Resources.get(sprite), x * 101, (y - view.top) * 83);
         }
     }
 };
@@ -99,10 +76,8 @@ CanvasDisplay.prototype.drawActors = function() {
         var desY = (actor.pos.y - this.viewport.top) * 83;
         if (actor.type == "player") {
             this.cx.drawImage(Resources.get(actor.sprite), desX, desY);
-        } else if (actor.type == "enemy" && actor.pos.y >= (this.viewport.top - 1.5)) {
+        } else if (actor.pos.y >= (this.viewport.top - 1.5)) {
             this.cx.drawImage(Resources.get(actor.sprite), desX, desY);
-        } else if (actor.type == "item" && actor.pos.y >= (this.viewport.top - 1.5)) {
-            this.cx.drawImage(Resources.get("images/Key-new.png"), desX, desY);
         }
     }, this);
 };
