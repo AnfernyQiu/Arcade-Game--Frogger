@@ -32,7 +32,7 @@ CanvasDisplay.prototype.updateViewport = function(step) {
     var player = this.level.player;
 
     if (this.level.status == null && view.top > 0.6) {
-        view.top = Math.max(view.top - 0.2 * step, 0);
+        view.top = Math.max(view.top - 0.55 * step, 0);
     }
 
 };
