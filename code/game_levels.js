@@ -26,8 +26,8 @@ var GAME_LEVELS = [{
         "ggggggg",
     ],
     actors: [
-        "       ",
         "      k",
+        "       ",
         "       ",
         "       ",
         " g     ",

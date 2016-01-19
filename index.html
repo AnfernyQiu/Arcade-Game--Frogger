@@ -1,15 +1,40 @@
 <!doctype html>
 
 <head>
+    <meta charset="utf-8">
     <link rel="stylesheet" href="css/main.css">
+    <link href='https://fonts.googleapis.com/css?family=Bangers' rel='stylesheet' type='text/css'>
+    <title>Arcade game clone</title>
 </head>
 
 <body>
-    <p>Lifes: <span id="lifes">3</span></p>
-    <div id="gamePanel"></div>
-<script src="code/resources.js"></script>
-<script src="code/game_levels.js"></script>
-<script src="code/canvas.js"></script>
-<script src="code/game.js"></script>
-<script src="code/engine.js"></script>
+    <div id="title">
+        <h1>Gem Adventure</h1>
+        <p class="subtitle">OOP Javascript, Udacious Style</p class="subtitle">
+    </div>
+    <div class="content">
+        <div class="left">
+            <ul class="mark">
+                <li class="count">
+                    <img class="count_image" src="character/Heart.png" alt="heart">
+                    <span id="lifes" class="number">3</span>
+                </li>
+                <li class="count">
+                    <img class="count_image" src="character/GemC.png" alt="gem">
+                    <span id="gems" class="number">0</span>
+                </li>
+            </ul>
+
+        </div>
+        <div id="gamePanel" class="gamePanel"></div>
+        <div class="right">
+            <h2>Move</h2>
+            <img class="move_image" src="character/arrows.png" alt="arrows">
+        </div>
+    </div>
+    <script src="code/resources.js "></script>
+    <script src="code/game_levels.js "></script>
+    <script src="code/canvas.js "></script>
+    <script src="code/game.js "></script>
+    <script src="code/engine.js "></script>
 </body>

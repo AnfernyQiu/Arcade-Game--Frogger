@@ -4,6 +4,8 @@ function Level(plan) {
     this.grid = [];
     this.actors = [];
     this.resArea = [];
+    this.display=document.getElementById("gamePanel");
+    this.gems=0;
 
     for (var y = 0; y < this.height; y++) {
         var line = plan.background[y],
@@ -138,6 +140,7 @@ Level.prototype.playerTouched = function(type, actor) {
         this.actors = this.actors.filter(function(other) {
             return other != actor;
         });
+        document.getElementById("gems").innerHTML=++this.gems;
     } else if (type == "key") {
         this.status = "won";
         this.finishDelay = 1;
@@ -315,7 +318,7 @@ function runAnimation(frameFunc) {
 }
 
 function runLevel(level, Display, andThen) {
-    var display = new Display(document.body, level);
+    var display = new Display(level.display, level);
     level.player.move(level, display);
     runAnimation(function(step) {
         level.animate(step, display);
