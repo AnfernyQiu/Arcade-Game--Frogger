@@ -9,7 +9,6 @@ function CanvasDisplay(parent, level) {
     this.viewport = {
         left: 0,
         top: this.level.height - 7,
-        //       top:1,
         width: this.level.width,
         height: 7,
         margin: 2

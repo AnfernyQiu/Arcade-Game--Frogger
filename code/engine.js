@@ -32,7 +32,7 @@ var Engine = (function(global) {
      * game loop.
      */
     function init() {
-        game.startLevel(0);
+        introGame();
     }
 
 

@@ -336,6 +336,7 @@ function RunGame(plans, Display) {
     this.plans = plans;
     this.display = Display;
     this.lifes = 3;
+    this.on=false;
 }
 
 RunGame.prototype.startLevel = function(n) {
@@ -344,6 +345,7 @@ RunGame.prototype.startLevel = function(n) {
         if (status == "lost" && that.lifes > 1) {
             that.startLevel(n);
             document.getElementById("lifes").innerHTML = --that.lifes;
+            document.getElementById("gems").innerHTML =0;
         } else if (status == "lost" && that.lifes == 1) {
             console.log("You lose!");
         } else if (n < that.plans.length - 1)
@@ -354,3 +356,16 @@ RunGame.prototype.startLevel = function(n) {
 }
 
 var game = new RunGame(GAME_LEVELS, CanvasDisplay);
+
+function introGame(){
+    addEventListener("keydown",function(e){
+        e.preventDefault();
+        if(!(game.on) && e.keyCode==32){
+            document.querySelector(".intro").classList.toggle("remove");
+            document.querySelector(".left").classList.remove("hidden");
+            document.querySelector(".right").classList.remove("hidden");
+            game.on=!game.on;
+            game.startLevel(0);
+        }
+    });
+}
