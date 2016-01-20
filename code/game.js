@@ -4,8 +4,9 @@ function Level(plan) {
     this.grid = [];
     this.actors = [];
     this.resArea = [];
-    this.display=document.getElementById("gamePanel");
-    this.gems=0;
+    this.display = document.getElementById("gamePanel");
+    this.gems = +$("#gems").text();
+    console.log(+$("#gems").text());
 
     for (var y = 0; y < this.height; y++) {
         var line = plan.background[y],
@@ -140,7 +141,7 @@ Level.prototype.playerTouched = function(type, actor) {
         this.actors = this.actors.filter(function(other) {
             return other != actor;
         });
-        document.getElementById("gems").innerHTML=++this.gems;
+        document.getElementById("gems").innerHTML = ++this.gems;
     } else if (type == "key") {
         this.status = "won";
         this.finishDelay = 1;
@@ -148,10 +149,10 @@ Level.prototype.playerTouched = function(type, actor) {
 };
 
 Level.prototype.notAtResArea = function(pos) {
-    var at=true;
+    var at = true;
     this.resArea.forEach(function(area) {
         if (area.x == pos.x && area.y == pos.y)
-            at=false;
+            at = false;
     });
     return at;
 };
@@ -336,36 +337,64 @@ function RunGame(plans, Display) {
     this.plans = plans;
     this.display = Display;
     this.lifes = 3;
-    this.on=false;
 }
 
 RunGame.prototype.startLevel = function(n) {
     var that = this;
     runLevel(new Level(this.plans[n]), this.display, function(status) {
         if (status == "lost" && that.lifes > 1) {
+            $("#lifes").text(--that.lifes);
+            $("#gems").text(0);
             that.startLevel(n);
-            document.getElementById("lifes").innerHTML = --that.lifes;
-            document.getElementById("gems").innerHTML =0;
         } else if (status == "lost" && that.lifes == 1) {
-            console.log("You lose!");
+            endGame(status);
         } else if (n < that.plans.length - 1)
             that.startLevel(n + 1);
         else
-            console.log("You win!");
+            endGame(status);
     });
 }
 
 var game = new RunGame(GAME_LEVELS, CanvasDisplay);
 
-function introGame(){
-    addEventListener("keydown",function(e){
+function introGame() {
+    function introOnce(e) {
         e.preventDefault();
-        if(!(game.on) && e.keyCode==32){
+        if (e.keyCode == 32) {
             document.querySelector(".intro").classList.toggle("remove");
             document.querySelector(".left").classList.remove("hidden");
             document.querySelector(".right").classList.remove("hidden");
-            game.on=!game.on;
             game.startLevel(0);
+            removeEventListener("keydown", introOnce);
         }
-    });
+    }
+    addEventListener("keydown", introOnce);
+}
+
+function endGame(status) {
+    var $gamePanel = $("#gamePanel");
+    var $winMes = HTMLwinMes.replace("%data%", $("#gems").text());
+    var $loseMes = HTMLloseMes.replace("%data%", $("#gems").text());
+    if (status == "lost") {
+        $gamePanel.append(HTMLloseHeader)
+            .append($loseMes)
+    } else {
+        $gamePanel.append(HTMLwinHeader)
+            .append($winMes)
+    }
+    $gamePanel.append(HTMLreplay);
+
+    function endOnce(e) {
+        e.preventDefault();
+        if (e.keyCode == 32) {
+            $("#header").remove();
+            $(".mes").remove();
+            game.lifes = 3;
+            $("#lifes").text(game.lifes);
+            $("#gems").text(0);
+            game.startLevel(0);
+            removeEventListener("keydown", endOnce);
+        }
+    }
+    addEventListener("keydown", endOnce);
 }
