@@ -6,7 +6,6 @@ function Level(plan) {
     this.resArea = [];
     this.display = document.getElementById("gamePanel");
     this.gems = +$("#gems").text();
-    console.log(+$("#gems").text());
 
     for (var y = 0; y < this.height; y++) {
         var line = plan.background[y],
@@ -255,7 +254,7 @@ Player.prototype.move = function(level, display) {
             27: 'pause'
         };
         var key = allowedKeys[e.keyCode];
-        if (level.status == null) {
+        if (level.status === null) {
             if (key == 'left' && that.pos.x > 0) {
                 var temPos = that.pos.plus(new Vector(-1, 0));
                 if (level.notAtResArea(temPos))
@@ -285,12 +284,12 @@ Player.prototype.move = function(level, display) {
 Player.prototype.act = function(level, display) {
     var centerY = this.pos.y;
     var buttom = display.viewport.top + display.viewport.height - display.viewport.margin;
-    if (level.status == null && centerY > buttom) {
+    if (level.status === null && centerY > buttom) {
         this.pos.x = Math.round(this.pos.x);
         this.pos.y -= 1;
     }
     var otherActor = level.actorAt(this);
-    if (otherActor && level.status == null) {
+    if (otherActor && level.status === null) {
         level.playerTouched(otherActor.type, otherActor);
     } else {
         this.ride = false;
@@ -307,7 +306,7 @@ function runAnimation(frameFunc) {
 
     function frame(time) {
         var stop = false;
-        if (lastTime != null) {
+        if (lastTime !== null) {
             var timeStep = Math.min(time - lastTime, 100) / 1000;
             stop = frameFunc(timeStep) === false;
         }
@@ -353,7 +352,7 @@ RunGame.prototype.startLevel = function(n) {
         else
             endGame(status);
     });
-}
+};
 
 var game = new RunGame(GAME_LEVELS, CanvasDisplay);
 
@@ -361,7 +360,7 @@ function introGame() {
     function introOnce(e) {
         e.preventDefault();
         if (e.keyCode == 32) {
-            document.querySelector(".intro").classList.toggle("remove");
+            $("div").remove(".intro");
             document.querySelector(".left").classList.remove("hidden");
             document.querySelector(".right").classList.remove("hidden");
             game.startLevel(0);
@@ -377,10 +376,10 @@ function endGame(status) {
     var $loseMes = HTMLloseMes.replace("%data%", $("#gems").text());
     if (status == "lost") {
         $gamePanel.append(HTMLloseHeader)
-            .append($loseMes)
+            .append($loseMes);
     } else {
         $gamePanel.append(HTMLwinHeader)
-            .append($winMes)
+            .append($winMes);
     }
     $gamePanel.append(HTMLreplay);
 
