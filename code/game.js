@@ -363,6 +363,7 @@ function introGame() {
             $("div").remove(".intro");
             document.querySelector(".left").classList.remove("hidden");
             document.querySelector(".right").classList.remove("hidden");
+            document.querySelector("#title").style.visibility="visible";
             game.startLevel(0);
             removeEventListener("keydown", introOnce);
         }
