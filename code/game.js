@@ -67,10 +67,14 @@ var ActorChars = {
     "b": Item,
     "g": Item,
     "k": Key,
-    "e": Enemy,
-    "E": Enemy,
+    "e": Bugl,
+    "E": Bugr,
     "t": Turtle,
-    "T": Turtle
+    "T": Turtle,
+    "a": Arrowl,
+    "A": Arrowr,
+    "u": Bulletl,
+    "U": Bulletr
 };
 
 Level.prototype.isFinished = function() {
@@ -210,16 +214,9 @@ Turtle.prototype.act = function(step, level) {
         this.pos.x = level.width;
 };
 
-function Enemy(pos, ch) {
+function Enemy(pos) {
     this.pos = pos;
     this.size = new Vector(1, 1);
-    if (ch == "E") {
-        this.speed = new Vector(2, 0);
-        this.sprite = 'character/bug-r.png';
-    } else if (ch == "e") {
-        this.speed = new Vector(-2, 0);
-        this.sprite = 'character/bug-l.png';
-    }
 }
 
 Enemy.prototype.type = "enemy";
@@ -232,6 +229,59 @@ Enemy.prototype.act = function(step, level) {
         this.pos.x = level.width;
 };
 
+function Bugl(pos){
+    Enemy.call(this,pos);
+    this.speed = new Vector(-2, 0);
+    this.sprite = 'character/bug-l.png';
+}
+
+Bugl.prototype=Object.create(Enemy.prototype);
+Bugl.prototype.constructor=Bugl;
+
+function Bugr(pos){
+    Enemy.call(this,pos);
+    this.speed = new Vector(2, 0);
+    this.sprite = 'character/bug-r.png';
+}
+
+Bugr.prototype=Object.create(Enemy.prototype);
+Bugr.prototype.constructor=Bugr;
+
+function Arrowl(pos){
+    Enemy.call(this,pos);
+    this.speed = new Vector(-3, 0);
+    this.sprite = 'character/arrow-fire-left.png';
+}
+
+Arrowl.prototype=Object.create(Enemy.prototype);
+Arrowl.prototype.constructor=Arrowl;
+
+function Arrowr(pos){
+    Enemy.call(this,pos);
+    this.speed = new Vector(3, 0);
+    this.sprite = 'character/arrow-fire.png';
+}
+
+Arrowr.prototype=Object.create(Enemy.prototype);
+Arrowr.prototype.constructor=Arrowr;
+
+function Bulletl(pos){
+    Enemy.call(this,pos);
+    this.speed = new Vector(-5, 0);
+    this.sprite = 'character/bullet.png';
+}
+
+Bulletl.prototype=Object.create(Enemy.prototype);
+Bulletl.prototype.constructor=Bulletl;
+
+function Bulletr(pos){
+    Enemy.call(this,pos);
+    this.speed = new Vector(5, 0);
+    this.sprite = 'character/bullet-r.png';
+}
+
+Bulletr.prototype=Object.create(Enemy.prototype);
+Bulletr.prototype.constructor=Bulletr;
 
 function Player(pos) {
     this.pos = pos;
