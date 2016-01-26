@@ -79,6 +79,10 @@ var Engine = (function(global) {
         'character/turtle.png',
         'character/Key.png',
         'character/pink-girl.png',
+        'character/arrow-fire.png',
+        'character/arrow-fire-left.png',
+        'character/bullet.png',
+        'character/bullet-r.png'
     ]);
     Resources.onReady(init);
 

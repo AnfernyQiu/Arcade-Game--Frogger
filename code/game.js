@@ -28,9 +28,10 @@ function Level(plan) {
         }
     }
 
-    for (var y = 1; y < 4; y++) {
-        for (var x = 2; x < 5; x++) {
-            this.resArea.push(new Vector(x, y));
+    for (var y = 0; y < this.height; y++) {
+        for (var x = 0; x < this.width; x++) {
+            if(plan.restArea[y][x]==="r")
+                this.resArea.push(new Vector(x, y));
         }
     }
 
