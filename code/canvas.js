@@ -39,15 +39,14 @@ CanvasDisplay.prototype.updateViewport = function(step) {
 CanvasDisplay.prototype.clearDisplay = function() {
     var text;
     if (this.level.status == "won") {
-        this.cx.fillStyle = "rgb(68, 191, 255)";
-        text = "You Win!";
+        this.cx.fillStyle = "#fff";
+        text = "Level Clear!";
     } else if (this.level.status == "lost") {
-        this.cx.fillStyle = "rgb(44, 136, 214)";
+        this.cx.fillStyle = "#a09";
         text = "Oh NO...";
     }
     if (this.level.status != null) {
-        this.cx.font = "28px Georgia";
-        this.cx.fillStyle = "fuchsia";
+        this.cx.font = "80px Georgia";
         this.cx.textAlign = "center";
         this.cx.fillText(text, this.canvas.width / 2, this.canvas.height / 2);
     }

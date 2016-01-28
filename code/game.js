@@ -285,7 +285,8 @@ Bulletr.prototype.constructor=Bulletr;
 
 function Player(pos) {
     this.pos = pos;
-    this.sprite = 'character/princess-girl.png';
+    this.sprites=["cat","horn","pink","princess"];
+    this.sprite = "character/"+this.sprites[Math.floor(Math.random() * this.sprites.length)]+"-girl.png";
     this.size = new Vector(1, 1);
     this.ride = false;
 }
