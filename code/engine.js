@@ -82,7 +82,8 @@ var Engine = (function(global) {
         'character/arrow-fire.png',
         'character/arrow-fire-left.png',
         'character/bullet.png',
-        'character/bullet-r.png'
+        'character/bullet-r.png',
+        'character/esc.png'
     ]);
     Resources.onReady(init);
 

@@ -41,7 +41,7 @@ function Level(plan) {
 
     this.status = this.finishDelay = null;
 
-    this.paused = false;
+    this.running = true;
 }
 var BgChars = {
     "g": "grass-block",
@@ -306,7 +306,7 @@ Player.prototype.move = function(level, display) {
             27: 'pause'
         };
         var key = allowedKeys[e.keyCode];
-        if (level.status === null) {
+        if ((level.status === null)&&level.running) {
             if (key == 'left' && that.pos.x > 0) {
                 var temPos = that.pos.plus(new Vector(-1, 0));
                 if (level.notAtResArea(temPos))
@@ -372,16 +372,35 @@ function runAnimation(frameFunc) {
 function runLevel(level, Display, andThen) {
     var display = new Display(level.display, level);
     level.player.move(level, display);
-    runAnimation(function(step) {
+    function handleKey(e){
+        if(e.keyCode===27){
+            if(level.running)
+                level.running=false;
+            else{
+                level.running=true;
+                runAnimation(animation);
+            }
+                
+        }
+    }
+    
+    addEventListener("keydown",handleKey);
+    
+    function animation(step) {
+        if(!level.running)
+            return false;
+        
         level.animate(step, display);
         display.drawFrame(step);
         if (level.isFinished()) {
             display.clear();
+            removeEventListener("keydown",handleKey);
             if (andThen)
                 andThen(level.status);
             return false;
         }
-    });
+    }
+    runAnimation(animation);
 }
 
 function RunGame(plans, Display) {

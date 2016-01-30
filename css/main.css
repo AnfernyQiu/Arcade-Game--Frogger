@@ -81,8 +81,12 @@ h2,
     margin-left: 0.5em;
 }
 
-.move_image {
+.r_image {
     width: 40%;
+}
+
+.pause{
+    margin-top: 2em;
 }
 
 #header {
