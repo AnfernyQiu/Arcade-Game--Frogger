@@ -1,3 +1,15 @@
+/*game.js
+ *This file define the driver of the game. It builds some 
+ *classes and functions that would be used to run the game.
+ */
+
+
+/*This constructor function build a level object:stores the
+ *width and height of the current level in grid level, along
+ *with 3 arrays: one for grid, one for actors, and one
+ *for restricted area.
+ *
+ */
 function Level(plan) {
     this.width = (plan.background)[0].length;
     this.height = plan.background.length;
@@ -102,10 +114,10 @@ Level.prototype.obstacleAt = function(pos, size) {
 Level.prototype.actorAt = function(actor) {
     for (var i = 0; i < this.actors.length; i++) {
         var other = this.actors[i];
-        if (other != actor &&
+        if (other !== actor &&
             actor.pos.x + actor.size.x - 13 / 101 > other.pos.x &&
             actor.pos.x + 13 / 101 < other.pos.x + other.size.x &&
-            actor.pos.y == other.pos.y)
+            actor.pos.y === other.pos.y)
             return other;
     }
 };
@@ -249,7 +261,7 @@ Bugr.prototype.constructor=Bugr;
 
 function Arrowl(pos){
     Enemy.call(this,pos);
-    this.speed = new Vector(-3, 0);
+    this.speed = new Vector(-4, 0);
     this.sprite = 'character/arrow-fire-left.png';
 }
 
@@ -258,7 +270,7 @@ Arrowl.prototype.constructor=Arrowl;
 
 function Arrowr(pos){
     Enemy.call(this,pos);
-    this.speed = new Vector(3, 0);
+    this.speed = new Vector(4, 0);
     this.sprite = 'character/arrow-fire.png';
 }
 
@@ -267,7 +279,7 @@ Arrowr.prototype.constructor=Arrowr;
 
 function Bulletl(pos){
     Enemy.call(this,pos);
-    this.speed = new Vector(-5, 0);
+    this.speed = new Vector(-6, 0);
     this.sprite = 'character/bullet.png';
 }
 
@@ -276,7 +288,7 @@ Bulletl.prototype.constructor=Bulletl;
 
 function Bulletr(pos){
     Enemy.call(this,pos);
-    this.speed = new Vector(5, 0);
+    this.speed = new Vector(6, 0);
     this.sprite = 'character/bullet-r.png';
 }
 

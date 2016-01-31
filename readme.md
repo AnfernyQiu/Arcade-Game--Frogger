@@ -17,6 +17,7 @@ Simply click the link above to start playing!
 
 ## Game control
 - Press **Spacebar** to start or restart a game.
+- Press **esc** to pause/resume the game.
 - Movement is controlled by **arrow-keys**.
 
 

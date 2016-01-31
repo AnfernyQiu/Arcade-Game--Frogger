@@ -1,3 +1,14 @@
+/*game_levels.js
+ *This file design the game_level in grids(arrays of strings),
+ *including background,actors,and restricted area that player
+ *could not enter in. Each letter stands for some 
+ *background tile or actor.For example, "g" in background
+ *stands for grass block,"b" in actors stands for 
+ *blue gem."r" in restArea means the area that player
+ *could not enter in.
+*/
+
+
 var GAME_LEVELS = [{
     background: [
         "ggggggg",
