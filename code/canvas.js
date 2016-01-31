@@ -105,7 +105,7 @@ CanvasDisplay.prototype.drawBackground = function () {
     //draw on canvas
     for (var y = yStart; y < yEnd; y++) {
         for (var x = 0; x < this.level.width; x++) {
-            var tile = this.level.grid[y][x],
+            var tile = this.level.background[y][x],
                 sprite = "background/" + tile + ".png";
             this.cx.drawImage(Resources.get(sprite), x * 101, (y - view.top) * 83);
         }
