@@ -20,4 +20,7 @@ Simply click the link above to start playing!
 - Press **esc** to pause/resume the game.
 - Movement is controlled by **arrow-keys**.
 
-
+## Acknowledgements
+- This game is inspired by the one in book **Eloquent Javascript** written by Marijn Haverbeke, and some
+codes come from the book.
+- Some images come from internet. The sea turtle image is from _shutterstock.com_.
