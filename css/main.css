@@ -51,7 +51,7 @@ h2,
 
 .hero {
     width: 60%;
-    margin: 1em, auto;
+    margin: 1em auto;
 }
 
 .left {
@@ -85,7 +85,7 @@ h2,
     width: 40%;
 }
 
-.pause{
+.pause {
     margin-top: 2em;
 }
 
@@ -98,10 +98,10 @@ h2,
     margin-bottom: 1em;
 }
 
-.win{
-    color:limegreen;
+.win {
+    color: limegreen;
 }
 
-.lose{
-    color:dodgerblue;
+.lose {
+    color: dodgerblue;
 }

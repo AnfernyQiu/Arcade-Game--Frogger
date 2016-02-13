@@ -39,11 +39,12 @@ function Level(plan) {
     this.resArea = [];
     this.display = document.getElementById("gamePanel");
     this.gems = +$("#gems").text();
+    var y,x,r,g;
 
-    for (var y = 0; y < this.height; y++) {
+    for (y = 0; y < this.height; y++) {
         var line = plan.background[y],
             gridLine = [];
-        for (var x = 0; x < this.width; x++) {
+        for (x = 0; x < this.width; x++) {
             var ch = line[x],
                 bgType = BgChars[ch];
             gridLine.push(bgType);
@@ -51,9 +52,9 @@ function Level(plan) {
         this.background.push(gridLine);
     }
 
-    for (var r = 0; r < this.height; r++) {
+    for (r = 0; r < this.height; r++) {
         var lineA = plan.actors[r];
-        for (var g = 0; g < this.width; g++) {
+        for (g = 0; g < this.width; g++) {
             var chA = lineA[g],
                 Actor = ActorChars[chA];
             if (Actor)
@@ -61,8 +62,8 @@ function Level(plan) {
         }
     }
 
-    for (var y = 0; y < this.height; y++) {
-        for (var x = 0; x < this.width; x++) {
+    for (y = 0; y < this.height; y++) {
+        for (x = 0; x < this.width; x++) {
             if (plan.restArea[y][x] === "r")
                 this.resArea.push(new Vector(x, y));
         }
@@ -171,7 +172,7 @@ var maxStep = 0.05;
  *stop showing the level.
  */
 Level.prototype.animate = function (step, display) {
-    if (this.status != null) {
+    if (this.status !== null) {
         this.finishDelay -= step;
     }
     /*The while loop cuts the time step into small pieces to ensure
@@ -378,7 +379,7 @@ Player.prototype.type = "player";
 Player.prototype.move = function (level, display) {
     var that = this;
     var viewPort = display.viewport;
-
+    var temPos;
     addEventListener("keydown", function (e) {
         e.preventDefault();
         var allowedKeys = {
@@ -391,20 +392,20 @@ Player.prototype.move = function (level, display) {
         var key = allowedKeys[e.keyCode];
         if ((level.status === null) && level.running) {
             if (key == 'left' && that.pos.x > 0) {
-                var temPos = that.pos.plus(new Vector(-1, 0));
+                temPos = that.pos.plus(new Vector(-1, 0));
                 if (level.notAtResArea(temPos))
                     that.pos = temPos;
             } else if (key == 'right' && that.pos.x < viewPort.width - 1) {
-                var temPos = that.pos.plus(new Vector(1, 0));
+                temPos = that.pos.plus(new Vector(1, 0));
                 if (level.notAtResArea(temPos))
                     that.pos = temPos;
             } else if (key == 'up' && that.pos.y > viewPort.top) {
-                var temPos = that.pos.plus(new Vector(0, -1));
+                temPos = that.pos.plus(new Vector(0, -1));
                 if (level.notAtResArea(temPos))
                     that.pos = temPos;
                 that.pos.x = Math.round(that.pos.x);
             } else if (key == 'down' && that.pos.y + 1 < viewPort.top + viewPort.height - viewPort.margin) {
-                var temPos = that.pos.plus(new Vector(0, 1));
+                temPos = that.pos.plus(new Vector(0, 1));
                 if (level.notAtResArea(temPos))
                     that.pos = temPos;
                 that.pos.x = Math.round(that.pos.x);
