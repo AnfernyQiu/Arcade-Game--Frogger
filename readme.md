@@ -24,6 +24,4 @@ Simply click the link above to start playing!
 Please see AppStruct.pdf for more information.
 
 ## Acknowledgements
-- This game is inspired by the one in book **Eloquent Javascript** written by Marijn Haverbeke, and game engine comes from the book.
-- Images loading function comes from **Udacity.com**.
 - Some images come from internet. The sea turtle image is from _shutterstock.com_.
